@@ -233,6 +233,8 @@ def dependencies_step():
     else:
         install_nvidia()
 
+    prime_select_nvidia()
+
     # STEP 2: Install bumblebee, but disable bumblebeed.service.
     # We enable bumblebeed.service as needed in the next steps.
     remark("Installing bumblebee.")
