@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+# Copyright 2018 David Zhao Akeley (akeley98)
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""Script for setting up GRUB boot option between nvidia and iGPU graphics.
+
+Use proprietary nvidia drivers for nvidia graphics (sorry rms).
+Use bbswitch, bumblebeed.service for iGPU graphics.
+
+Plug: Avoid everything from Nvidia, enemy of your freedom! (...and
+your sanity, hence the module's name). This module only exists because
+I made that mistake and need to make do. Nvidia graphics, never again!
+"""
+
+from demented_igpu_lib import *
+
+try:
+    # STEP 1: Nvidia proprietary drivers :(
+    if detect_nvidia():
+        remark("Proprietary nvidia driver appears to be installed.")
+    else:
+        install_nvidia()
+
+    # STEP 2: Install bumblebee, but disable bumblebeed.service.
+    # We enable bumblebeed.service as needed in the next steps.
+    remark("Installing bumblebee.")
+    code = os.system("apt install bumblebee") >> 8
+    if code != 0: error()
+
+    remark("Disabling bumblebeed.service by default.")
+    process_strict("systemctl", "disable", "bumblebeed.service")
+
+    # STEP 3: Make our own systemd target file based on graphical.target .
+    # bumblebeed.service is enabled only when we choose this target.
+    create_igpu_target()
+
+    # STEP 4: Patch the 10_linux GRUB config file so that when GRUB
+    # generates its menus, there's an additional iGPU menu entry that
+    # has as kernel parameters the custom systemd target file we just
+    # created (and acpi_rev_override=1).
+    if maybe_patch_10_linux_file():
+        # Update GRUB if needed.
+        process_strict("update-grub")
+    else:
+        remark("Skipped update-grub; run manually if needed.")
+
+    remark("Done!")
+
+except Exception as e:
+    error("Something happened; error message incoming.")
+    raise
