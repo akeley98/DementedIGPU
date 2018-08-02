@@ -204,7 +204,7 @@ iGPU graphics. Return True iff we did the patch."""
             time.sleep(15)
             remark(f"Patching {filename} anyway.")
         else:
-            remark(f"Patching {filename}")
+            remark(f"Patching {filename}.")
         
         process("patch", filename, "DementedIGPU.patch")
 

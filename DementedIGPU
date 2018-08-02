@@ -52,6 +52,7 @@ try:
     # created (and acpi_rev_override=1).
     if maybe_patch_10_linux_file():
         # Update GRUB if needed.
+        remark("Running update-grub.")
         process_strict("update-grub")
     else:
         remark("Skipped update-grub; run manually if needed.")
