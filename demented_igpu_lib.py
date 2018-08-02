@@ -74,7 +74,6 @@ of its stdout output and return code. Stderr goes to stderr."""
         time.sleep(0.01)
         if cs % 1000 == 999:
             remark(f"waited{cs}0ms args={args}")
-    error("Subprocess timed out")
 
 def process_strict(*args):
     """Run a command line process with the given args: if successful (code
@@ -82,7 +81,7 @@ def process_strict(*args):
 goes to stderr.
     """
     text, code = process(*args)
-    if code != 0: error(f"error code ({code}) running command f{args}")
+    if code != 0: error(f"error code ({code}) running command {args}")
     return text
     
 def detect_nvidia():
@@ -286,3 +285,8 @@ def main(do_dependencies=True, do_target_file=True, do_patch=True):
     except Exception as e:
         warning("Something happened; error message incoming.")
         raise
+
+    if __name__ == "__main__":
+        error("Wrong file. Run DementedIGPU instead.")
+        
+        
