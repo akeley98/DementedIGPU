@@ -181,7 +181,7 @@ iGPU graphics. Return True iff we did the patch."""
 
     filename = "/etc/grub.d/10_linux"
     before = "d2d52571736ed1dcd05069249154a09f2f0935be041e7cadd180dc94ad6e4db9"
-    after = "2e29c9a1eeb7c470910f6db86f0a2200f997d261d5b21f719fbcfcda8c271406"
+    after = "08599044a1549e8f6020975a0d1b69a665b6c588c1ac5b37ec91be3516c5ab14"
 
     do_patch = True
     
