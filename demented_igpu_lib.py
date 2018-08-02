@@ -175,13 +175,15 @@ def create_igpu_target():
 
 
 def maybe_patch_10_linux_file():
-    """Patch the 10_linux grub.d file if we think we need to. This makes
-it so that there's 2 menu entries in GRUB, one for nvidia and one for
-iGPU graphics. Return True iff we did the patch."""
+    """Patch the 10_linux grub.d file if we think we need to (and backup
+the old file if we do). This makes it so that there's 2 menu entries
+in GRUB, one for nvidia and one for iGPU graphics. Return True iff we
+did the patch.
+    """
 
     filename = "/etc/grub.d/10_linux"
     before = "d2d52571736ed1dcd05069249154a09f2f0935be041e7cadd180dc94ad6e4db9"
-    after = "08599044a1549e8f6020975a0d1b69a665b6c588c1ac5b37ec91be3516c5ab14"
+    after = "461c60eceea662d56b0f479a0406803e9d212ff3097fc0bd8bd6c9435af37b6d"
 
     do_patch = True
     
@@ -193,8 +195,10 @@ iGPU graphics. Return True iff we did the patch."""
     elif code != 1:
         error("grep failed while checking 10_linux file.")
 
-    # Patch it if it doesn't seem to be patched.
+    # Patch it if it doesn't seem to be patched, and make a backup.
     if do_patch:
+        remark(f"Backing up original {filename} to ./.10_linux")
+        process("cp", filename, "./.10_linux")
         # Check the before hash.
         contents = open(filename, "rb").read()
         if sha256(contents).hexdigest() != before:
@@ -214,3 +218,69 @@ iGPU graphics. Return True iff we did the patch."""
         warning(f"{filename} hash is not as expected.")
     
     return do_patch
+
+
+# The main program is below.
+# Break it up into several steps which can be called independently.
+
+def dependencies_step():
+    # STEP 1: Nvidia proprietary drivers :(
+    # Check before installing because I don't want to overwrite the
+    # user's driver if they opted for a different version.
+    if detect_nvidia():
+        remark("Proprietary nvidia driver appears to be installed.")
+        remark("This script was tested with nvidia-384.")
+    else:
+        install_nvidia()
+
+    # STEP 2: Install bumblebee, but disable bumblebeed.service.
+    # We enable bumblebeed.service as needed in the next steps.
+    remark("Installing bumblebee.")
+    code = os.system("apt install bumblebee") >> 8
+    if code != 0: error()
+
+    remark("Disabling bumblebeed.service by default.")
+    process_strict("systemctl", "disable", "bumblebeed.service")
+
+def create_igpu_target_step():
+    # STEP 3: Make our own systemd target file based on graphical.target .
+    # bumblebeed.service is enabled only when we choose this target.
+    create_igpu_target()
+
+def patch_grub_step():
+    # STEP 4: Patch the 10_linux GRUB config file so that when GRUB
+    # generates its menus, there's an additional iGPU menu entry that
+    # has as kernel parameters the custom systemd target file we just
+    # created (and acpi_rev_override=1).
+    if maybe_patch_10_linux_file():
+        # Update GRUB if needed.
+        remark("Running update-grub.")
+        process_strict("update-grub")
+    else:
+        remark("Skipped update-grub; run manually if needed.")
+
+def main(do_dependencies=True, do_target_file=True, do_patch=True):
+    if len(sys.argv) >= 2:
+        error("This script expects no arguments.")
+
+    try:
+        if do_dependencies:
+            dependencies_step()
+        else:
+            remark("Skipping dependencies install.")
+
+        if do_target_file:
+            create_igpu_target_step()
+        else:
+            remark("Skipping DementedIGPU.target file creation step.")
+
+        if do_patch:
+            patch_grub_step()
+        else:
+            remark("Skipping GRUB config file patching step.")
+
+        remark("Done!")
+
+    except Exception as e:
+        warning("Something happened; error message incoming.")
+        raise

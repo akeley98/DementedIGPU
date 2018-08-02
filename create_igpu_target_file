@@ -14,15 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Script for setting up GRUB boot option between nvidia and iGPU graphics.
-
-Use proprietary nvidia drivers for nvidia graphics (sorry rms).
-Use bbswitch, bumblebeed.service for iGPU graphics.
-
-Plug: Avoid everything from Nvidia, enemy of your freedom! (...and
-your sanity, hence the module's name). This module only exists because
-I made that mistake and need to make do. Nvidia graphics, never again!
-"""
-
+"""Step 3: Creating custom systemd target file."""
 from demented_igpu_lib import main
-main()
+main(False, True, False)

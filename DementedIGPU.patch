@@ -20,7 +20,7 @@
 +   local version_="$2"
 +   local type_="$3"
 +   local args_="$4"
-+   local igpu_args="${args_} systemd.unit=igpu.target acpi_rev_override=1"
++   local igpu_args="${args_} systemd.unit=DementedIGPU.target acpi_rev_override=1"
 +   # Move the (X) line here if you prefer Nvidia entries first.
 +   if [ "${type_}" != "recovery" ]; then
 +     demented_linux_entry "${os_} (iGPU)" "${version_}" "${type_}" "${igpu_args}"
