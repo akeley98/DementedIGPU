@@ -182,7 +182,7 @@ did the patch.
 
     filename = "/etc/grub.d/10_linux"
     before = "d2d52571736ed1dcd05069249154a09f2f0935be041e7cadd180dc94ad6e4db9"
-    after = "461c60eceea662d56b0f479a0406803e9d212ff3097fc0bd8bd6c9435af37b6d"
+    after = "b51e79022c05e233bf31cfa7ebc933eca32d0c2d6cb0b4935dc2a99009a5a86c"
 
     do_patch = True
     
