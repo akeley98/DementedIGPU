@@ -48,12 +48,11 @@ def error(text="(see above for possible reason)"):
     sys.stderr.flush()
     sys.exit(1)
 
-# Change working directory to wherever this library is, and check that
-# we're root.  I'm the only user of this library, so I don't worry
-# about making global state changes like this. (Also I just call error
-# instead of throwing an exception for the same reason; better error
-# formatting and no one's trying to recover from errors here).
-if os.geteuid() != 0: error("Need to be root (run with sudo).")
+# Change working directory to wherever this library is.  I'm the only
+# user of this library, so I don't worry about making global state
+# changes like this. (Also I just call error instead of throwing an
+# exception for the same reason; better error formatting and no one's
+# trying to recover from errors here).
 working_dir = os.path.split(sys.argv[0])[0]
 if working_dir:
     os.chdir(working_dir)
@@ -263,6 +262,9 @@ def patch_grub_step():
 def main(do_dependencies=True, do_target_file=True, do_patch=True):
     if len(sys.argv) >= 2:
         error("This script expects no arguments.")
+
+    if os.geteuid() != 0:
+        error("Need to be root (run with sudo).")
 
     try:
         if do_dependencies:
