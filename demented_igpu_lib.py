@@ -26,26 +26,34 @@ from subprocess import Popen, PIPE
 from hashlib import sha256
 import re
 
+def write(text):
+    """Print to stderr and log file (defined later)."""
+    sys.stderr.write(text)
+    log_file.write(text)
+
 def remark(text):
     """Print remark with blue prefix."""
-    sys.stderr.write("\x1b[36mDementedIGPU: \x1b[0m")
-    sys.stderr.write(text)
-    sys.stderr.write("\n")
+    write("\x1b[36mDementedIGPU: \x1b[0m")
+    write(text)
+    write("\n")
     sys.stderr.flush()
+    log_file.flush()
 
 def warning(text):
     """Print warning with purple prefix."""
-    sys.stderr.write("\x1b[35m\x1b[1mDementedIGPU Warning: \x1b[0m")
-    sys.stderr.write(text)
-    sys.stderr.write("\n")
+    write("\x1b[35m\x1b[1mDementedIGPU Warning: \x1b[0m")
+    write(text)
+    write("\n")
     sys.stderr.flush()
+    log_file.flush()
 
 def error(text="(see above for possible reason)"):
     """Print error message with red prefix, then exit."""
-    sys.stderr.write("\x1b[31m\x1b[1mDementedIGPU Error: \x1b[0m")
-    sys.stderr.write(text)
-    sys.stderr.write("\n")
+    write("\x1b[31m\x1b[1mDementedIGPU Error: \x1b[0m")
+    write(text)
+    write("\n")
     sys.stderr.flush()
+    log_file.flush()
     sys.exit(1)
 
 # Change working directory to wherever this library is.  I'm the only
@@ -56,6 +64,10 @@ def error(text="(see above for possible reason)"):
 working_dir = os.path.split(sys.argv[0])[0]
 if working_dir:
     os.chdir(working_dir)
+
+log_file = open(".log", 'w')
+
+if working_dir:
     remark(f"Changing to {working_dir} directory.")
 
 def process(*args):
@@ -202,8 +214,6 @@ did the patch.
         if sha256(contents).hexdigest() != before:
             warning(f"{filename} hash is not as expected.")
             warning("Have you manually modified the file? The patch may fail.")
-            warning("Pausing for 15 seconds in case you want to cancel (^C).")
-            time.sleep(15)
             remark(f"Patching {filename} anyway.")
         else:
             remark(f"Patching {filename}.")
@@ -281,7 +291,8 @@ def main(do_dependencies=True, do_target_file=True, do_patch=True):
             patch_grub_step()
         else:
             remark("Skipping GRUB config file patching step.")
-
+        
+        remark("Log written to .log file.")
         remark("Done!")
 
     except Exception as e:
