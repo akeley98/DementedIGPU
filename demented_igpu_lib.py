@@ -299,7 +299,8 @@ def main(do_dependencies=True, do_target_file=True, do_patch=True):
         warning("Something happened; error message incoming.")
         raise
 
-    if __name__ == "__main__":
-        error("Wrong file. Run DementedIGPU instead.")
+if __name__ == "__main__":
+    error("Wrong file. Run DementedIGPU instead.")
+
         
         
