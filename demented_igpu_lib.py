@@ -94,7 +94,24 @@ goes to stderr.
     text, code = process(*args)
     if code != 0: error(f"error code ({code}) running command {args}")
     return text
+
+def backup(filename, backup_name):
+    """Copy the specified file (absolute path) to two places:
+          {DementedIGPU directory}/.backup_name
+          {DementedIGPU directory}/backups/backup_name-{utc timestamp}
+       neither file name nor backup name should look like a Unix
+       command line switch or contain % signs.
+    """
+    filename_0 = f".{backup_name}"
+    timestamp = time.strftime("%Y-%m-%dT%H%M%SZ", time.gmtime())
+    filename_1 = time.strftime(f"backups/{backup_name}-{timestamp}")
     
+    remark(f"Backing up {filename} to {filename_0}")
+    process_strict("cp", filename, filename_0)
+
+    remark(f"Backing up {filename} to {filename_1}")
+    process_strict("cp", filename, filename_1)
+
 def detect_nvidia():
     """Return True iff we think nvidia is installed."""
 
@@ -212,8 +229,7 @@ did the patch.
 
     # Patch it if it doesn't seem to be patched, and make a backup.
     if do_patch:
-        remark(f"Backing up original {filename} to ./.10_linux")
-        process("cp", filename, "./.10_linux")
+        backup(filename, "10_linux")
         # Check the before hash.
         contents = open(filename, "rb").read()
         if sha256(contents).hexdigest() != before:

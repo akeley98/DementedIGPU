@@ -7,7 +7,7 @@
 # themselves using an editor from the console (vi, emacs, etc.)
 
 import os
-from demented_igpu_lib import process_strict, remark, error
+from demented_igpu_lib import process_strict, remark, error, backup
 
 if os.getuid() != 0:
     error("Need to be root (run with sudo).")
@@ -16,8 +16,7 @@ def apologize():
     remark("Sorry, couldn't figure it out.")
     remark("Try editing /etc/grub/default manually.")
 
-remark("Writing backup to .grub")
-process_strict("cp", "/etc/default/grub", ".grub")
+backup("/etc/default/grub", "grub")
 
 in_file = open("/etc/default/grub")
 text = in_file.read()

@@ -251,6 +251,19 @@ stable; I don't know why. If it's still not stable, run the above
 command from the `Ctrl-Alt-F3` console as before (or from recovery
 mode).
 
+# Uninstall
+
+To undo the file changes made by the script, run
+`restore_10_linux_backup` and `restore_default_grub_backup`. This
+restores backups made the previous time the script modified the
+`/etc/grub/10_linux` and `/etc/default/grub` files. If these backups
+aren't old enough, manually copy a backup from the backups directory
+to the correct location – a new backup is written each time the script
+changes one of those files. Run `grub-update` after this.
+
+Uninstall nvidia drivers and bumblebee using whatever method your
+distribution requires (`apt remove` for Ubuntu).
+
 # Sources
 
 Various stuff I consulted through my Nvidia graphics ordeal.
