@@ -161,6 +161,11 @@ could be multiple. In that case, prefer /lib, then /run, then /etc."""
     return find("/lib") or find("/run") or find("/etc") or \
         error("Couldn't find graphical.target file.")
 
+modification_notice = """
+# Modified by DementedIGPU script (Add Nvidia & iGPU GRUB boot menu options).
+# https://github.com/akeley98/DementedIGPU/
+"""
+
 def create_igpu_target():
     """Create DementedIGPU.target file based on graphical.target file with added bumblebee service in "Wants" list. Put the file where we found the graphical.target file."""
 
@@ -177,7 +182,7 @@ def create_igpu_target():
         error(f"Could not find 'Wants' listing in {graphical_filename} .")
 
     lines[wants_idx] = wants_line + " bumblebeed.service"
-    text = '\n'.join(lines) + '\n'
+    text = modification_notice + '\n'.join(lines) + '\n'
     igpu_filename = os.path.join(path, "DementedIGPU.target")
     
     open(igpu_filename, "w").write(text)
