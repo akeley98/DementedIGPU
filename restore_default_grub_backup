@@ -1,0 +1,4 @@
+#!/usr/bin/env python3
+from demented_igpu_lib import process_strict, remark
+process_strict("cp", ".grub", "/etc/default/grub")
+remark("/etc/default/grub restored from .grub backup")

@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+# Clears GRUB_CMDLINE_LINUX_DEFAULT and GRUB_CMDLINE_LINUX options
+# from /etc/default/grub.
+# This isn't a very smart script. It's meant to make life easier
+# for beginners who can't be expected to modify /etc/grub/default
+# themselves using an editor from the console (vi, emacs, etc.)
+
+import os
+from demented_igpu_lib import process_strict, remark, error
+
+if os.getuid() != 0:
+    error("Need to be root (run with sudo).")
+
+def apologize():
+    remark("Sorry, couldn't figure it out.")
+    remark("Try editing /etc/grub/default manually.")
+
+remark("Writing backup to .grub")
+process_strict("cp", "/etc/default/grub", ".grub")
+
+in_file = open("/etc/default/grub")
+text = in_file.read()
+in_file.close()
+
+lines = text.split('\n')
+cmd_idx = None
+default_idx = None
+
+for i, line in enumerate(lines):
+    if line.strip().startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+        default_idx = i
+    elif line.strip().startswith("GRUB_CMDLINE_LINUX"):
+        cmd_idx = i
+
+if cmd_idx == None:
+    apologize()
+    error("Couldn't find GRUB_CMDLINE_LINUX line.")
+
+if default_idx == None:
+    apologize()
+    error("Couldn't find GRUB_CMDLINE_LINUX_DEFAULT line.")
+
+lines[cmd_idx] = 'GRUB_CMDLINE_LINUX=""'
+lines[default_idx] = 'GRUB_CMDLINE_LINUX_DEFAULT=""'
+
+remark("Writing /etc/default/grub")
+out_file = open("/etc/default/grub", "w")
+out_file.write('\n'.join(lines))
+out_file.close()

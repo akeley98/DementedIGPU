@@ -1,2 +1,5 @@
-#!/bin/sh
-cp .10_linux /etc/grub.d/10_linux
+#!/usr/bin/env python3
+from demented_igpu_lib import process_strict
+process_strict("cp", ".10_linux", "/etc/grub.d/10_linux")
+remark("/etc/grub.d/10_linux restored from .10_linux backup.")
+
