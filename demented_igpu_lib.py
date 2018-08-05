@@ -139,7 +139,8 @@ stdout; apt may ask the user questions.
 
 
 def prime_select_nvidia():
-    """Do prime-select nvidia. prime-select must not be tampering with the GPU for my scheme to work."""
+    """Do prime-select nvidia. prime-select must not be tampering with the
+GPU for my scheme to work."""
     text, code = process("which", "prime-select")
     if code == 1:
         remark("nvidia-prime not found (we don't need it anyway).")
@@ -184,7 +185,9 @@ modification_notice = """
 """
 
 def create_igpu_target():
-    """Create DementedIGPU.target file based on graphical.target file with added bumblebee service in "Wants" list. Put the file where we found the graphical.target file."""
+    """Create DementedIGPU.target file based on graphical.target file with
+added bumblebee service in "Wants" list. Put the file where we found
+the graphical.target file."""
 
     graphical_filename = find_graphical_target()
     path = os.path.split(graphical_filename)[0]
