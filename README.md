@@ -180,8 +180,8 @@ that and replace it with `nomodeset vga=791`, then press `F10` to boot.
 Hopefully the computer boots after this. Once you're in, install
 Ubuntu as usual. Just make sure you connect to wi-fi at this point!
 (Unless you have ethernet, that's even better).  If you want to
-replicate what I did exactly, I chose minimal install and no
-proprietary software.
+replicate what I did exactly, I chose minimal install, no to
+proprietary software, and yes to updates.
 
 Reboot to the new Ubuntu install. Once you get to the login page, do
 NOT log in. It'll probably crash if you try to run a graphical system
@@ -233,6 +233,7 @@ to restart, but before doing that, optionally run
 
 ```
 sudo DementedIGPU-master/clear_default_grub
+sudo update-grub
 ```
 
 to clear your GRUB linux cmd settings.
