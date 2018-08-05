@@ -247,9 +247,13 @@ mode).
 Various stuff I consulted through my Nvidia graphics ordeal.
 
 https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#Power_Saving
+
 https://bbs.archlinux.org/viewtopic.php?id=211027
+
 https://wiki.archlinux.org/index.php/systemd#Create_custom_target
+
 https://ubuntuforums.org/showthread.php?t=2354834#5
+
 https://unix.stackexchange.com/questions/304085/trying-to-understand-what-a-systemd-target-wants
 
 
