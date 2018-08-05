@@ -18,7 +18,9 @@ about installing Ubuntu 18.04 on an XPS 15 9560.
 
 Download or clone this repo, unzip if needed, open a terminal and
 navigate to the `DementedIGPU` (or `DementedIGPU-master`) directory,
-and run `sudo DementedIGPU`.
+and run `sudo DementedIGPU`. There's also this `notify` script that
+you can target with a keyboard shortcut in order to quickly find out
+which GPU is running.
 
 # Overview
 
@@ -34,6 +36,12 @@ using. As long as we use bumblebee only when we want to keep the GPU
 off (instead of using it for switching), we should be okay. I do this
 by adding 2 GRUB menu entries: one that instructs systemd to load
 bbswitch (iGPU mode) and one that excludes bbswitch (Nvidia mode).
+
+I've tried to comment and log liberally so that when you look at a
+line of code you can immediately get an idea of what the hell was
+going through my head when I wrote it. If it doesn't work for your
+laptop or distro, tweak it. Then fork the repo and publish your
+changes for everyone else; this is free software!
 
 # Step 1: Nvidia drivers
 

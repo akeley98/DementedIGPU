@@ -3,25 +3,25 @@ import os
 import sys
 
 def error():
-    os.system("notify-send 'DementedKeys: notify error. "
-        "Run DementedKeys/notify in terminal to debug.")
+    os.system("notify-send 'DementedIGPU: notify error. "
+        "Run DementedIGPU/notify in terminal to debug.")
     sys.exit(2)
 
 code = os.system("lsmod | grep -w bbswitch") >> 8
 if code == 0:
-    os.system("notify-send 'DementedKeys: iGPU used (bbswitch detected).'")
+    os.system("notify-send 'DementedIGPU: iGPU used (bbswitch detected).'")
     sys.exit(0)
 elif code != 1:
     error()
 
 code = os.system("lsmod | grep nvidia") >> 8
 if code == 0:
-    os.system("notify-send 'DementedKeys: Nvidia used (no bbswitch detected).'")
+    os.system("notify-send 'DementedIGPU: Nvidia used (no bbswitch detected).'")
     sys.exit(0)
 elif code != 1:
     error()
 
-os.system("notify-send 'DementedKeys: Unsure... "
+os.system("notify-send 'DementedIGPU: Unsure... "
     "no bbswitch or nvidia module detected.'")
 sys.exit(2)
 
