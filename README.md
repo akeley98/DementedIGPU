@@ -18,9 +18,13 @@ about installing Ubuntu 18.04 on an XPS 15 9560.
 
 Download or clone this repo, unzip if needed, open a terminal and
 navigate to the `DementedIGPU` (or `DementedIGPU-master`) directory,
-and run `sudo DementedIGPU`. There's also this `notify` script that
+and run `sudo ./DementedIGPU`. There's also this `notify` script that
 you can target with a keyboard shortcut in order to quickly find out
 which GPU is running.
+
+If there's an issue with one step of the script, you can do that step
+manually and run the script for the other steps; see the sections
+below to see the steps that correspond to each script.
 
 # Overview
 
@@ -45,7 +49,8 @@ changes for everyone else; this is free software!
 
 # Step 1: Nvidia drivers
 
-(Corresponds to part of the `configure_dependencies` script).
+(Corresponds to part of the `configure_dependencies` script. Skip this
+if you already have the Nvidia driver of your choice installed).
 
 For me, I installed the `nvidia-384` driver. I haven't tested the
 script with other versions. If you're running a
@@ -68,10 +73,15 @@ nouveau drivers and reinstalling GRUB each time a switch is done. So
 make sure it's in `nvidia` mode and not interfering with what we're
 trying to do!
 
+After this step, restart the computer.
+
 # Step 2: bbswitch
 
 (Corresponds to the other part of the
 `configure_dependencies` script).
+
+MAKE SURE THAT YOU RESTARTED THE COMPUTER IF YOU JUST INSTALLED A NEW
+NVIDIA DRIVER!
 
 Now we need to install bumblebee (which should install
 bbswitch). Once this is done, since we plan to enable bumblebee
@@ -189,7 +199,9 @@ Hopefully the computer boots after this. Once you're in, install
 Ubuntu as usual. Just make sure you connect to wi-fi at this point!
 (Unless you have ethernet, that's even better).  If you want to
 replicate what I did exactly, I chose minimal install, no to
-proprietary software, and yes to updates.
+proprietary software, and yes to updates. (Note: I never personally
+tested this, but it may be easier to select yes to the third-party
+proprietary software).
 
 Reboot to the new Ubuntu install. Once you get to the login page, do
 NOT log in. It'll probably crash if you try to run a graphical system
@@ -229,7 +241,15 @@ sudo DementedIGPU-master/DementedIGPU
 ```
 
 to run my script. Say yes (`y`) whenever it asks. Hopefully this
-works. File an issue if it doesn't.
+works. File a quick issue if it doesn't (although if it turns to be an
+issue with one of the dependencies especially Nvidia driver, there may
+be little I can do to fix it. File the issue anyway).
+
+If it asks you to restart after installing Nvidia drivers, do so, then
+navigate back to the terminal (`Ctrl+Alt+F3') and run `sudo
+DementedIGPU-master/DementedIGPU` again. (Although this time it may be
+safe to log in the graphical way and run the command from a terminal
+emulator).
 
 Finally, run
 
