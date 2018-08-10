@@ -246,7 +246,7 @@ issue with one of the dependencies especially Nvidia driver, there may
 be little I can do to fix it. File the issue anyway).
 
 If it asks you to restart after installing Nvidia drivers, do so, then
-navigate back to the terminal (`Ctrl+Alt+F3') and run `sudo
+navigate back to the terminal (`Ctrl+Alt+F3`) and run `sudo
 DementedIGPU-master/DementedIGPU` again. (Although this time it may be
 safe to log in the graphical way and run the command from a terminal
 emulator).
