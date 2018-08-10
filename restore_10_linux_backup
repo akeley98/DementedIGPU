@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-from demented_igpu_lib import process_strict
+from demented_igpu_lib import process_strict, backup, remark
+
+backup("/etc/grub.d/10_linux", "10_linux", True)
+
 process_strict("cp", ".10_linux", "/etc/grub.d/10_linux")
 remark("/etc/grub.d/10_linux restored from .10_linux backup.")
-

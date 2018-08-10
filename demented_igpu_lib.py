@@ -95,19 +95,23 @@ goes to stderr.
     if code != 0: error(f"error code ({code}) running command {args}")
     return text
 
-def backup(filename, backup_name):
+def backup(filename, backup_name, timestamp_backup_only=False):
     """Copy the specified file (absolute path) to two places:
           {DementedIGPU directory}/.backup_name
           {DementedIGPU directory}/backups/backup_name-{utc timestamp}
-       neither file name nor backup name should look like a Unix
-       command line switch or contain % signs.
+neither file name nor backup name should look like a Unix
+command line switch or contain % signs.
+
+Skip the backup without the timestamp (first one) if the last
+arg is True.
     """
     filename_0 = f".{backup_name}"
     timestamp = time.strftime("%Y-%m-%dT%H%M%SZ", time.gmtime())
     filename_1 = time.strftime(f"backups/{backup_name}-{timestamp}")
-    
-    remark(f"Backing up {filename} to {filename_0}")
-    process_strict("cp", filename, filename_0)
+
+    if not timestamp_backup_only:
+        remark(f"Backing up {filename} to {filename_0}")
+        process_strict("cp", filename, filename_0)
 
     remark(f"Backing up {filename} to {filename_1}")
     process_strict("cp", filename, filename_1)
@@ -153,7 +157,7 @@ GPU for my scheme to work."""
     else:
         remark("Did prime-select nvidia so it's not messing with "
                "the driver.")
-    
+
 def find_graphical_target():
     """Return the filename of the graphical.target systemd file. It seems
 that it could be at any random place depending on distro, and there
@@ -197,15 +201,22 @@ the graphical.target file."""
     for i, line in enumerate(lines):
         if line.strip().startswith("Wants"):
             wants_idx, wants_line = i, line
+            line_no = i+1
+            remark(f"Wants seems to be on line {line_no}.")
             break
     else:
         error(f"Could not find 'Wants' listing in {graphical_filename} .")
 
+    if '#' in wants_line:
+        warning("There seems to be a comment on that line. I may get confused.")
+
     lines[wants_idx] = wants_line + " bumblebeed.service"
     text = modification_notice + '\n'.join(lines) + '\n'
     igpu_filename = os.path.join(path, "DementedIGPU.target")
-    
-    open(igpu_filename, "w").write(text)
+
+    file_object = open(igpu_filename, "w")
+    file_object.write(text)
+    file_object.close()
     remark(f"Wrote {igpu_filename}.")
 
 
@@ -221,7 +232,7 @@ did the patch.
     after = "b51e79022c05e233bf31cfa7ebc933eca32d0c2d6cb0b4935dc2a99009a5a86c"
 
     do_patch = True
-    
+
     # Look for demented_linux_entry function.
     text, code = process("grep", "demented_linux_entry", filename)
     if code == 0:
@@ -241,14 +252,14 @@ did the patch.
             remark(f"Patching {filename} anyway.")
         else:
             remark(f"Patching {filename}.")
-        
+
         process("patch", filename, "DementedIGPU.patch")
 
     # Check the after hash.
     contents = open(filename, "rb").read()
     if sha256(contents).hexdigest() != after:
         warning(f"{filename} hash is not as expected.")
-    
+
     return do_patch
 
 
@@ -315,7 +326,7 @@ def main(do_dependencies=True, do_target_file=True, do_patch=True):
             patch_grub_step()
         else:
             remark("Skipping GRUB config file patching step.")
-        
+
         remark("Log written to .log file.")
         remark("Done!")
 
@@ -325,6 +336,3 @@ def main(do_dependencies=True, do_target_file=True, do_patch=True):
 
 if __name__ == "__main__":
     error("Wrong file. Run DementedIGPU instead.")
-
-        
-        
