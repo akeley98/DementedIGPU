@@ -125,10 +125,13 @@ def detect_nvidia():
     return re.search(b"nvidia-[0-9]", text) is not None
 
 def install_nvidia():
-    """Install nvidia drivers (and add apt repo).
+    """Install nvidia drivers (and add apt repo). Request restart after.
 
 We call os.system directly instead of Popen since we must not capture
-stdout; apt may ask the user questions.
+stdout; apt may ask the user questions. We also request a restart by
+calling error; it's a bit hacky but I wanted to make sure there's
+absolutely no chance that the script will continue without restarting
+after installing nvidia. (I realized too late how bad it this could be).
     """
     remark("Adding nvidia repository.")
     code = os.system("add-apt-repository ppa:graphics-drivers/ppa") >> 8
@@ -141,6 +144,8 @@ stdout; apt may ask the user questions.
     code = os.system("apt-get install nvidia-384") >> 8
     if code != 0: error()
 
+    warning("Must restart (sudo shutdown -r now) after installing driver.")
+    error("(Incomplete) Please restart then start this script again.")
 
 def prime_select_nvidia():
     """Do prime-select nvidia. prime-select must not be tampering with the
