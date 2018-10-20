@@ -110,7 +110,7 @@ reason it seems that this file can be at any odd place depending on
 your distro. Once you find it (possibly with a command like `find /lib
 -name graphical.target` – also try `/bin` and `/etc` I'm told), make
 a copy of it in the same directory. Remember the name of the copy
-(it's called `DementedIGPU.target`) in the script. Then, in the
+(it's called `DementedIGPU.target` in the script). Then, in the
 `Wants:` line, add `bumblebeed.service`. It should look something like
 this:
 
