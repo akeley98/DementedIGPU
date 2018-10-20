@@ -7,7 +7,7 @@ Nvidia graphics. If you have Ubuntu 18.04 you can download and run the
 only distro I tested on – my hardware was a Dell XPS 15 9560). If you
 have some other `systemd` based distribution, you may be able to run
 the script as-is or with some tweaking. The script tries to be smart
-and not just blindly overwrite you system files. And of course, you
+and not just blindly overwrite your system files. And of course, you
 can just follow the steps below manually instead of using the
 automatic script.
 
@@ -133,7 +133,7 @@ and
 ```acpi_rev_override=1```
 
 passed as kernel parameters. GRUB runs the bash scripts in
-`/etc/grub.d` to create its menus (the scripts writes the menus to
+`/etc/grub.d` to create its menus (the scripts write the menus to
 `stdout` and remarks to `stderr`). I noticed that the `linux_entry`
 function in the `10_linux` file was responsible for writing a menu
 entry for booting the current OS. The last (4th) parameter is the list
