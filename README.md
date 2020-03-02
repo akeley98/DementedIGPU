@@ -1,3 +1,7 @@
+*Edit:* Unfortunately, it seems that `bumblebee` is well and truly broken on the latest versions of Ubuntu 18.04, so this script no longer functions. However, at least the latest version of `prime-select` seems to work well again, although imo it's not as convenient compared to a grub menu option (especially when external monitors don't work in intel mode...)
+
+I have some ideas on how the blacklisting strategy used by `prime-select` can be extended to provide a grub menu option. What could be done is to remove the `bumblebeed.service` wants from `DementedIGPU.target` and replace it with an `ExecStart` that writes a "blacklist nvidia" file to `/etc/modprobe.d`. There would also have to be a comparable `DementedIGPU-nvidia.target` file with an `ExexStart` that removes the blacklist from `/etc/modprobe.d`, and would be targeted instead of `graphical.target` when the user selects the Nvidia option in the GRUB menu. Sadly, I don't use an Nvidia laptop anymore so I can't test out this idea (actually, this isn't so sad at all for my sanity. But it is unfortunate for my hapless script, who no longer has a maintainer \[me\]).
+
 # Demented IGPU
 
 My solution for getting Nvidia GTX 10xx laptop GPUs working on
