@@ -18,10 +18,6 @@
 
 Use proprietary nvidia drivers for nvidia graphics (sorry rms).
 Use bbswitch, bumblebeed.service for iGPU graphics.
-
-Plug: Avoid everything from Nvidia, enemy of your freedom! (...and
-your sanity, hence the module's name). This module only exists because
-I made that mistake and need to make do. Nvidia graphics, never again!
 """
 
 from demented_igpu_lib import main
